@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import java.util.List;
 import info.androidhive.navigationdrawer.NonScrollListView;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.activity.MainActivity;
+import info.androidhive.navigationdrawer.other.Repository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,9 +33,12 @@ import info.androidhive.navigationdrawer.activity.MainActivity;
  * create an instance of this fragment.
  */
 public class PhotosFragment extends Fragment {
+    private static final String TAG = "myLogs";
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    RecyclerView lv;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -71,7 +77,37 @@ public class PhotosFragment extends Fragment {
         }
 
     }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        Log.d(TAG, "перед trycatch");
+        try {
+            lv =  view.findViewById(R.id.imps);
+            Repository.importantView=lv;
+//            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, dails);
+            lv.setAdapter(Repository.importantAdapter);
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Пустой адаптер", Toast.LENGTH_SHORT).show();
+        }
+        Log.d(TAG, "после trycatch");
 
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//                String dail = adapter.getItem(position);
+//                if (lv.isItemChecked(position) == true) {
+//                    selecteddails.add(dail);
+//                } else {
+//                    selecteddails.remove(dail);
+//                }
+//            }
+//        });
+
+        Log.d(TAG, "создание");
+    }
 
 
    /* @OnItemClick(R.id.listView)

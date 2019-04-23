@@ -1,6 +1,9 @@
 package info.androidhive.navigationdrawer.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +28,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.ArrayList;
+
+import info.androidhive.navigationdrawer.ListAdapter;
+import info.androidhive.navigationdrawer.Notifier;
 import info.androidhive.navigationdrawer.R;
 import info.androidhive.navigationdrawer.TaskActivity;
 import info.androidhive.navigationdrawer.fragment.HomeFragment;
@@ -33,6 +41,8 @@ import info.androidhive.navigationdrawer.fragment.PhotosFragment;
 import info.androidhive.navigationdrawer.fragment.SettingsFragment;
 import info.androidhive.navigationdrawer.other.CircleTransform;
 import info.androidhive.navigationdrawer.SettingsHeadersActivity;
+import info.androidhive.navigationdrawer.other.Repository;
+import info.androidhive.navigationdrawer.other.Task;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
     private FloatingActionButton fab;
+    private MyBroadcastReceiver mMyBroadcastReceiver;
    // private static final String urlNavHeaderBg = "192.168.43.151/back.jpg";
     //private static final String urlProfileImg = "192.168.43.151/user.png";
     public static int navItemIndex = 0;
@@ -96,7 +107,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         );
-
+//        Repository.tasks=new ArrayList<>();
+        Repository.init(getApplicationContext());
+//        Task task=new Task();task.year=2019;task.month=5;task.day=1;task.important=false;task.notification=true;task.task="Task";
+//        Repository.add(getApplicationContext(),task);
         loadNavHeader();
         setUpNavigationView();
         if (savedInstanceState == null) {
@@ -104,12 +118,30 @@ public class MainActivity extends AppCompatActivity {
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
         }
+        mMyBroadcastReceiver = new MyBroadcastReceiver();
+
+        // регистрируем BroadcastReceiver
+        IntentFilter intentFilter = new IntentFilter(
+                Notifier.ACTION_MYINTENTSERVICE);
+        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(mMyBroadcastReceiver, intentFilter);
     }
 
 
 
 
+    public class MyBroadcastReceiver extends BroadcastReceiver {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Repository.update(getApplicationContext());
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mMyBroadcastReceiver);
+    }
     /***
      * Load navigation menu header information
      * like background image, profile image

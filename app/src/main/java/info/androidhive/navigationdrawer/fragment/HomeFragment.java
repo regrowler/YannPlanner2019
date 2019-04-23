@@ -3,9 +3,11 @@ package info.androidhive.navigationdrawer.fragment;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +19,16 @@ import android.widget.Toast;
 import android.view.LayoutInflater;
 
 import info.androidhive.navigationdrawer.R;
+import info.androidhive.navigationdrawer.TaskActivity;
+import info.androidhive.navigationdrawer.other.Repository;
+
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,7 +42,7 @@ import java.util.Locale;
  */
 public class HomeFragment extends Fragment {
 
-
+    Date date;
     TextView dateview;
     CompactCalendarView compactCalendar;
     private SimpleDateFormat dateFormatMonth = new SimpleDateFormat("MMMM- yyyy", Locale.getDefault());
@@ -44,6 +52,9 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    GregorianCalendar calendar=new GregorianCalendar();
+
     View view;
     private OnFragmentInteractionListener mListener;
 
@@ -59,7 +70,48 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getActivity().findViewById(R.id.fab).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(getContext(), TaskActivity.class);
+                        intent.putExtra("year",calendar.get(Calendar.YEAR));
+                        intent.putExtra("month",calendar.get(Calendar.MONTH));
+                        intent.putExtra("day",calendar.get(Calendar.DAY_OF_MONTH));
+                        getActivity().startActivity(intent);
+                    }
+                }
+        );
 
+        final CompactCalendarView compactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.compactcalendar_view);
+//        compactCalendarView.setCurrentDate(date);
+
+        Repository.calendarView=compactCalendarView;
+        Repository.loadCalendar();
+        compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+                date=dateClicked;
+                long y=dateClicked.getTime();
+                GregorianCalendar calendar2=new GregorianCalendar();
+                calendar2.setTime(dateClicked);
+                calendar.set(Calendar.DAY_OF_MONTH,calendar2.get(Calendar.DAY_OF_MONTH));
+                calendar.set(Calendar.MONTH,calendar2.get(Calendar.MONTH));
+                calendar.set(Calendar.YEAR,calendar2.get(Calendar.YEAR));
+//                int u=calendar.get(Calendar.DAY_OF_MONTH);
+//                compactCalendarView.removeEvent(new Event(Color.WHITE,calendar.getTimeInMillis()));
+//                compactCalendarView.addEvent(new Event(Color.WHITE,calendar.getTimeInMillis()));
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+
+            }
+        });
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

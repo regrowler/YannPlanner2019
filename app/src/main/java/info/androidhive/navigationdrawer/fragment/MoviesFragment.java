@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import info.androidhive.navigationdrawer.R;
+import info.androidhive.navigationdrawer.other.Repository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +52,7 @@ public class MoviesFragment extends Fragment {
     ArrayAdapter<String> adapter;
 
     ArrayList<String> selecteddails = new ArrayList();
-    ListView lv;
+    RecyclerView lv;
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -83,24 +85,24 @@ public class MoviesFragment extends Fragment {
 
     }
 
-    public void add(View view) {
-        EditText et = (EditText) getActivity().findViewById(R.id.et);
-        String dail = et.getText().toString();
-        if (!dail.isEmpty() && dails.contains(dail) == false) {
-            adapter.add(dail);
-            et.setText("");
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    public void remove(View view) {
-        for (int i = 0; i < selecteddails.size(); i++) {
-            adapter.remove(selecteddails.get(i));
-        }
-        lv.clearChoices();
-        selecteddails.clear();
-        adapter.notifyDataSetChanged();
-    }
+//    public void add(View view) {
+//        EditText et = (EditText) getActivity().findViewById(R.id.et);
+//        String dail = et.getText().toString();
+//        if (!dail.isEmpty() && dails.contains(dail) == false) {
+//            adapter.add(dail);
+//            et.setText("");
+//            adapter.notifyDataSetChanged();
+//        }
+//    }
+//
+//    public void remove(View view) {
+//        for (int i = 0; i < selecteddails.size(); i++) {
+//            adapter.remove(selecteddails.get(i));
+//        }
+////        lv.clearChoices();
+//        selecteddails.clear();
+//        adapter.notifyDataSetChanged();
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,25 +120,26 @@ public class MoviesFragment extends Fragment {
         }
         Log.d(TAG, "перед trycatch");
         try {
-            lv = (ListView) getActivity().findViewById(R.id.lv);
-            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, dails);
-            lv.setAdapter(adapter);
+            lv =  view.findViewById(R.id.lv);
+            Repository.taskView=lv;
+//            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, dails);
+            lv.setAdapter(Repository.dealsAdapter);
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Пустой адаптер", Toast.LENGTH_SHORT).show();
         }
         Log.d(TAG, "после trycatch");
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                String dail = adapter.getItem(position);
-                if (lv.isItemChecked(position) == true) {
-                    selecteddails.add(dail);
-                } else {
-                    selecteddails.remove(dail);
-                }
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//                String dail = adapter.getItem(position);
+//                if (lv.isItemChecked(position) == true) {
+//                    selecteddails.add(dail);
+//                } else {
+//                    selecteddails.remove(dail);
+//                }
+//            }
+//        });
 
         Log.d(TAG, "создание");
     }
