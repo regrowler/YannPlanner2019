@@ -1,31 +1,27 @@
 package info.androidhive.navigationdrawer.fragment;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.view.LayoutInflater;
 
+import info.androidhive.navigationdrawer.ListAdapter;
 import info.androidhive.navigationdrawer.R;
-import info.androidhive.navigationdrawer.TaskActivity;
+import info.androidhive.navigationdrawer.activity.TaskActivity;
 import info.androidhive.navigationdrawer.other.Repository;
+import info.androidhive.navigationdrawer.other.Task;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -44,6 +40,10 @@ public class HomeFragment extends Fragment {
 
     Date date;
     TextView dateview;
+
+    ListAdapter adapter;
+    List<Task> list;
+
     CompactCalendarView compactCalendar;
     private SimpleDateFormat dateFormatMonth = new SimpleDateFormat("MMMM- yyyy", Locale.getDefault());
     private static final String ARG_PARAM1 = "param1";
@@ -70,9 +70,37 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    public void update(){
+        if(getView()!=null){
+            RecyclerView recyclerView=getView().findViewById(R.id.daterec);
+            list.clear();
+            for(int i=0;i<Repository.tasks.size();i++){
+                if(Repository.tasks.get(i).year==calendar.get(Calendar.YEAR)){
+                    if(Repository.tasks.get(i).month==calendar.get(Calendar.MONTH)){
+                        if(Repository.tasks.get(i).day==calendar.get(Calendar.DAY_OF_MONTH)){
+                            list.add(Repository.tasks.get(i));
+                        }
+                    }
+                }
+            }
+            if(recyclerView!=null){
+                recyclerView.setAdapter(adapter);
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }
+
+
+    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        list=new ArrayList<>();
+        adapter=new ListAdapter(getContext(),list);
         getActivity().findViewById(R.id.fab).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -88,9 +116,10 @@ public class HomeFragment extends Fragment {
 
         final CompactCalendarView compactCalendarView = (CompactCalendarView) getActivity().findViewById(R.id.compactcalendar_view);
 //        compactCalendarView.setCurrentDate(date);
-
+        Repository.homeFragment=this;
         Repository.calendarView=compactCalendarView;
         Repository.loadCalendar();
+        compactCalendarView.setCurrentDayIndicatorStyle(CompactCalendarView.SMALL_INDICATOR);
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
@@ -101,6 +130,8 @@ public class HomeFragment extends Fragment {
                 calendar.set(Calendar.DAY_OF_MONTH,calendar2.get(Calendar.DAY_OF_MONTH));
                 calendar.set(Calendar.MONTH,calendar2.get(Calendar.MONTH));
                 calendar.set(Calendar.YEAR,calendar2.get(Calendar.YEAR));
+                update();
+//                adapter.notifyDataSetChanged();
 //                int u=calendar.get(Calendar.DAY_OF_MONTH);
 //                compactCalendarView.removeEvent(new Event(Color.WHITE,calendar.getTimeInMillis()));
 //                compactCalendarView.addEvent(new Event(Color.WHITE,calendar.getTimeInMillis()));

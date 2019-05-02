@@ -18,6 +18,7 @@ import java.util.List;
 
 import info.androidhive.navigationdrawer.ListAdapter;
 import info.androidhive.navigationdrawer.Notifier;
+import info.androidhive.navigationdrawer.fragment.HomeFragment;
 
 public class Repository {
     public static List<Task> tasks;
@@ -33,6 +34,7 @@ public class Repository {
     public static RecyclerView notificationView;
     public static RecyclerView importantView;
 
+    public static HomeFragment homeFragment;
 
     public static CompactCalendarView calendarView;
 

@@ -14,7 +14,7 @@
             android:name=".Notifier"
             android:exported="false"></service>
 
-        <activity android:name=".TaskActivity" />
+        <activity android:name=".activity.TaskActivity" />
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"

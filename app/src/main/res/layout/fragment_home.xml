@@ -1,30 +1,47 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="info.androidhive.navigationdrawer.fragment.HomeFragment">
-    <TextView
-        android:id="@+id/dateview"
-        android:layout_width="fill_parent"
-        android:layout_height="110dp"
-        android:background="#ffe95451"
-        android:gravity="center_vertical|center_horizontal"
-        android:textColor="#fff" />
 
-    <com.github.sundeepk.compactcalendarview.CompactCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/compactcalendar_view"
-        android:layout_width="fill_parent"
-        android:layout_height="400dp"
-        android:layout_marginTop="110dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        app:compactCalendarBackgroundColor="#ffe95451"
-        app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
-        app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
-        app:compactCalendarMultiEventIndicatorColor="#fff"
-        app:compactCalendarTargetHeight="250dp"
-        app:compactCalendarTextColor="#fff"
-        app:compactCalendarTextSize="18sp" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/dateview"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#ffe95451"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#fff"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <com.github.sundeepk.compactcalendarview.CompactCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/compactcalendar_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:compactCalendarBackgroundColor="#ffe95451"
+            app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
+            app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
+            app:compactCalendarMultiEventIndicatorColor="#fff"
+            app:compactCalendarTargetHeight="250dp"
+            app:compactCalendarTextColor="#fff"
+            app:compactCalendarTextSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/dateview"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/daterec"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/compactcalendar_view"
+            tools:layout_editor_absoluteX="8dp" />
+
+    </android.support.constraint.ConstraintLayout>
 </FrameLayout>
